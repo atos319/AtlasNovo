@@ -1,4 +1,5 @@
 
+<!-- VIEW TABELA -->
 <div x-data="tabelaGerencial(<?= htmlspecialchars(json_encode($Listagem)) ?>,['valor'],'FormaPagamento')">
 
     <table class="w-full text-left [&_td]:p-1 [&_th]:p-2 text-xs" id="tabela1">
@@ -26,3 +27,41 @@
         </tfoot>
     </table>
 </div>
+
+<!-- CONTROLLER -->
+<?php
+
+    public function ExtratoArquivo(): void
+
+    {
+
+        $id = $_GET['id'];
+        $DadosExtrato = $this->financeiro->ExtratoArquivo($id);
+        $ListarTipoAC = $this->financeiro->ListarTipoAC();
+
+        $this->viewModal('financeiro/ExtratoArquivo', [
+            'title'   => 'Detalhes Arquivo - Extrato',
+            'DadosExtrato'   => $DadosExtrato,
+            'IdExtrato'   => $id,
+            'ListarTipoAC' => $ListarTipoAC
+        ]);
+        
+    }    
+
+?>
+
+<!-- MODAL  -->
+<?php
+
+    public function ListarTipoAC(): array
+
+    {
+        
+        return $this->query(
+            "SELECT * FROM notas_nf_valorac ORDER BY id ASC",
+            []
+        );
+
+    }  
+
+?>
