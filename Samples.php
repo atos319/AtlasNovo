@@ -28,6 +28,56 @@
     </table>
 </div>
 
+<div x-data="{ 
+    status: '', 
+    loading: false,
+    rows: <?= htmlspecialchars(json_encode($Listagem)) ?>,
+    options: <?= htmlspecialchars(json_encode($ListagemTipoAC)) ?> 
+}">
+
+<!-- FORMULARIO PADRAO  -->
+<form 
+    @submit.prevent="
+      loading = true;
+      status = '';
+      try {
+        const res = await fetch('/api', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(Object.fromEntries(new FormData($el)))
+        });
+        status = res.ok ? 'success' : 'error';
+      } catch (e) {
+        status = 'error';
+      } finally {
+        loading = false;
+      }
+    "
+  >
+        <template x-for="(row, index) in rows" :key="row.id">
+            <div style="margin-bottom: 10px; border-bottom: 1px solid #ccc;">
+                <select name="tipo_ac">
+                    <template x-for="opt in options" :key="opt.id">
+                        <option :value="opt.id" x-text="opt.titulo"></option>
+                    </template>
+                </select>
+            </div>
+        </template>
+
+        <button type="submit" :disabled="loading" x-text="loading ? 'Enviando...' : 'Enviar'"></button>
+    </form>
+
+    <!-- Mensagens de Feedback -->
+    <template x-if="status === 'success'">
+      <p class="text-green-600">Enviado com sucesso!</p>
+    </template>
+
+    <template x-if="status === 'error'">
+      <p class="text-red-600">Erro ao enviar. Tente novamente.</p>
+    </template>
+
+</div>
+
 <!-- CONTROLLER -->
 <?php
 
