@@ -2,6 +2,13 @@
 <!-- VIEW TABELA -->
 <div x-data="tabelaGerencial(<?= htmlspecialchars(json_encode($Listagem)) ?>,['valor'],'FormaPagamento')">
 
+    <input 
+    type="text" 
+    x-model="busca" 
+    placeholder="Filtrar por..." 
+    class="w-full mb-2 text-center"
+    />
+
     <table class="w-full text-left [&_td]:p-1 [&_th]:p-2 text-xs" id="tabela1">
         
         <thead>
