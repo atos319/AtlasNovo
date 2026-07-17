@@ -1,11 +1,12 @@
 <form x-data="{ loading: false }"
     @submit.prevent="
                     loading = true;
+                    const form = $event.target;
+                    const formData = new FormData(form);
                     try {
-                      const res = await fetch('../EditarObsVencQuery', {
+                      const res = await fetch('../edit/acesso-query', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(Object.fromEntries(new FormData($el)))
+                        body: formData
                       });
 
                       const dadosResposta = await res.json();
@@ -34,16 +35,25 @@
             </div>          
             
             <div>
-              <label>Observações:</label>
-              <textarea name="obs" x-model="rows[0].obs" rows="5" class="w-full p-3 border rounded-xl text-xs"></textarea>
+              <label>Ordem:</label>
+              <input type="text" name="controle" class="text-center font-bold" :value="rows[0].controle">
+            </div>            
+            
+            <div class="mt-3">
+              <label class="clear-both">Abas Selecionadas: </label>
+                <div class="grid grid-cols-3 gap-x-8 gap-y-3 mt-3">
+                    <template x-for="a in JSON.parse(rows[0].abas)" :key="a.IdAba">
+                        <label class="flex items-start gap-2 cursor-pointer">
+                            <input type="checkbox" name="abas_acesso[]" class="w-4 h-4 rounded border-gray-300 accent-blue-600 focus:ring-blue-500" :value="a.IdAba" :checked="rows[0].abas_acesso.includes(a.IdAba)"><small x-text="a.OrdAba+' - '+a.DescricaoAba"></small>
+                        </label>
+                    </template>
+                </div>
             </div>
 
           <div>
-            <button type="submit" :disabled="loading" x-text="loading ? 'Atualizando...' : 'Atualizar'" class="btn-gray-xs">Atualizar</button>
+            <button type="submit" :disabled="loading" x-text="loading ? 'Atualizando...' : 'Atualizar'" class="btn-gray-xs mt-3">Atualizar</button>
           </div>
 
         </div>
-
-
 
     </form>
